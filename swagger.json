@@ -169,7 +169,7 @@
       "get" : {
         "tags" : [ "pet" ],
         "summary" : "Find pet by ID",
-        "description" : "Returns a single pet",
+        "description" : "Returns a single pet AAAAAAAA",
         "operationId" : "getPetById",
         "produces" : [ "application/json", "application/xml" ],
         "parameters" : [ {
@@ -192,6 +192,9 @@
           },
           "404" : {
             "description" : "Pet not found"
+          },
+          "429" : {
+            "description" : "Limited"
           }
         },
         "security" : [ {
