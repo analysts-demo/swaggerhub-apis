@@ -1,7 +1,7 @@
 {
   "swagger" : "2.0",
   "info" : {
-    "description" : "This is a swaggerhub Petstore server.  You can find \nout more about Swagger at \n[http://swagger.io](http://swagger.io) or on \n[irc.freenode.net, #swagger](http://swagger.io/irc/).\n",
+    "description" : "This is a sample Petstore server changed in 2023.  You can find \nout more about Swagger at \n[http://swagger.io](http://swagger.io) or on \n[irc.freenode.net, #swagger](http://swagger.io/irc/).\n",
     "version" : "1.0.0",
     "title" : "Swagger Petstore",
     "termsOfService" : "http://swagger.io/terms/",
@@ -169,7 +169,7 @@
       "get" : {
         "tags" : [ "pet" ],
         "summary" : "Find pet by ID",
-        "description" : "Returns a single pet AAAAAAAAA",
+        "description" : "Returns a single pet",
         "operationId" : "getPetById",
         "produces" : [ "application/json", "application/xml" ],
         "parameters" : [ {
@@ -192,9 +192,6 @@
           },
           "404" : {
             "description" : "Pet not found"
-          },
-          "429" : {
-            "description" : "Limited"
           }
         },
         "security" : [ {
@@ -811,6 +808,6 @@
     "url" : "http://swagger.io"
   },
   "host" : "virtserver.swaggerhub.com",
-  "basePath" : "/analysts-demo/swaggerhub_petstore_api/1.0.0",
+  "basePath" : "/analysts-demos/Governed-Petstore/1.0.0",
   "schemes" : [ "https", "http" ]
 }
