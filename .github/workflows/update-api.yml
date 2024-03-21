@@ -1,0 +1,24 @@
+name: Update API
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  update-api:
+    runs-on: [ ]
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Deactivate API
+        run: |
+          echo "Deactivating API"
+
+      - name: Update API
+        run: |
+          echo "Update API"
+
+      - name: Activate API
+        run: |
+          echo "Activate API"
