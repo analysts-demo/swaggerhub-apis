@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  title: Governed Petstore
+  title: SwaggerHub Petstore
   description: |
     This is a sample Petstore server.  You can find
     out more about Swagger at
