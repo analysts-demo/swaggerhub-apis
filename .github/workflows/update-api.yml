@@ -19,7 +19,7 @@ jobs:
     steps:
       - name: Deactivate API
         run: |
-          deactivate_status = $(curl -o /dev/null -s -w "%{http_code}" --location --request PUT "${{ env.baseURL }}/apis/${{ env.apiId }}/deactivate" -H "Accept: application/json" -H "Authorization: Basic Z29rdWwucmFqOnFteS1rZHY1cXJ6IWJjZi5LWU4=")
+          deactivate_status=$(curl -o /dev/null -s -w "%{http_code}" --location --request PUT "${{ vars.baseURL }}/apis/${{ vars.apiId }}/deactivate" -H "Accept: application/json" -H "Authorization: Basic ")
           
           if [ "${deactivate_status}" == "200" ]; then
             echo "API deactivated successfully."
@@ -34,7 +34,7 @@ jobs:
 
       - name: Activate API
         run: |
-          activate_status = $(curl -o /dev/null -s -w "%{http_code}" --location --request PUT "${{ env.baseURL }}/apis/${{ env.apiId }}/activate" -H "Accept: application/json" -H "Authorization: Basic Z29rdWwucmFqOnFteS1rZHY1cXJ6IWJjZi5LWU4=")
+          activate_status=$(curl -o /dev/null -s -w "%{http_code}" --location --request PUT "${{ vars.baseURL }}/apis/${{ vars.apiId }}/activate" -H "Accept: application/json" -H "Authorization: Basic Z29rdWwucmFqOnFteS1rZHY1cXJ6IWJjZi5LWU4=")
           
           if [ "${activate_status}" == "200" ]; then
             echo "API activated successfully."
