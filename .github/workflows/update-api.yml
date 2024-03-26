@@ -1,12 +1,14 @@
 name: Update API
 
 on:
+  workflow_call:
+
   push:
     branches: [ "main" ]
 
 jobs:
   update-api:
-    runs-on: [ ]
+    runs-on: [ analysts-demo ]
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
