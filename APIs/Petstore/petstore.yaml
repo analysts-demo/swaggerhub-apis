@@ -1,6 +1,6 @@
-openapi: 3.0.1
+openapi: 3.0.2
 info:
-  title: Swagger Petstore
+  title: Governed Petstore
   description: |
     This is a sample Petstore server.  You can find
     out more about Swagger at
@@ -17,6 +17,8 @@ externalDocs:
   description: Find out more about Swagger
   url: http://swagger.io
 servers:
+- url: https://virtserver.swaggerhub.com/analysts-demo/governed_petstore/1.0.0
+  description: SwaggerHub API Auto Mocking
 - url: https://virtserver.swaggerhub.com/analysts-demo/swaggerhub-petstore/1.0.0
   description: SwaggerHub API Auto Mocking
 - url: https://petstore.swagger.io/v2
