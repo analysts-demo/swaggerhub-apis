@@ -6,6 +6,11 @@ on:
     paths:
       - 'APIs/Petstore/petstore.yaml'
 
+env:
+  baseURL: 'https://analystsdemo.apigw-aw-eu.webmethods.io/rest/apigateway/'
+  apiId: 'cb7fcbf0-fc21-46ef-8d55-936480d4997f'
+  policyId: ''
+
 jobs:
   update-api:
     runs-on: [ analysts-demo ]
@@ -23,4 +28,4 @@ jobs:
 
       - name: Activate API
         run: |
-          echo "Activate API"
+          curl --location '${{ env.baseURL }}/apis/${{ env.apiId }}/activate' --header 'Accept: application/json' --header 'Authorization: Basic Z29rdWwucmFqOnFteS1rZHY1cXJ6IWJjZi5LWU4='
