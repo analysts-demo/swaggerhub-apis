@@ -2,7 +2,6 @@ name: Update API
 
 on:
   workflow_call:
-
   push:
     branches: [ "main" ]
 
