@@ -1,10 +1,12 @@
 name: Update API
 
 on:
-  workflow_call:
+  workflow_dispatch:
+
   push:
     paths:
       - 'APIs/Petstore/petstore.yaml'
+      - '.github/workflows/*'
 
 env:
   baseURL: 'https://analystsdemo.apigw-aw-eu.webmethods.io/rest/apigateway/'
@@ -20,7 +22,14 @@ jobs:
 
       - name: Deactivate API
         run: |
-          echo "Deactivating API"
+          deactivate_status = $(curl -o /dev/null -s -w "%{http_code}" --location --request PUT "${{ env.baseURL }}/apis/${{ env.apiId }}/deactivate" -H "Accept: application/json" -H "Authorization: Basic Z29rdWwucmFqOnFteS1rZHY1cXJ6IWJjZi5LWU4="
+          
+          if [ "${deactivate_status}" == "200" ]; then
+            echo "API deactivated successfully."
+          else
+            echo "Unable to deactivate API."
+            exit 1
+          fi
 
       - name: Update API
         run: |
@@ -28,4 +37,11 @@ jobs:
 
       - name: Activate API
         run: |
-          curl --location '${{ env.baseURL }}/apis/${{ env.apiId }}/activate' --header 'Accept: application/json' --header 'Authorization: Basic Z29rdWwucmFqOnFteS1rZHY1cXJ6IWJjZi5LWU4='
+          activate_status = $(curl -o /dev/null -s -w "%{http_code}" --location --request PUT "${{ env.baseURL }}/apis/${{ env.apiId }}/activate" -H "Accept: application/json" -H "Authorization: Basic Z29rdWwucmFqOnFteS1rZHY1cXJ6IWJjZi5LWU4="
+          
+          if [ "${activate_status}" == "200" ]; then
+            echo "API activated successfully."
+          else
+            echo "Unable to activate API."
+            exit 1
+          fi
