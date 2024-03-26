@@ -3,7 +3,8 @@ name: Update API
 on:
   workflow_call:
   push:
-    branches: [ "main" ]
+    paths:
+      - 'APIs/Petstore/petstore.yaml'
 
 jobs:
   update-api:
