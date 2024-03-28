@@ -6,7 +6,6 @@ on:
   push:
     paths:
       - "APIs/Petstore/petstore.yaml"
-      - ".github/workflows/*"
 
 jobs:
   update-api:
