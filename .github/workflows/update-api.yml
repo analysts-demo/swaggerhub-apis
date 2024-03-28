@@ -16,7 +16,7 @@ jobs:
         
       - name: Deactivate API
         run: |
-          deactivate_status=$(curl -o /dev/null -s -w "%{http_code}" --location --request PUT "${{ vars.baseURL }}/apis/${{ vars.apiId }}/deactivate" -H "Accept: application/json" -H "Authorization: Basic ${{ secrets.basicAuth }}")
+          deactivate_status=$(curl -o /dev/null -s -w "%{http_code}" --location --request PUT "${{ vars.baseURL }}/apis/cb7fcbf0-fc21-46ef-8d55-936480d4997f/deactivate" -H "Accept: application/json" -H "Authorization: ${{ secrets.basicAuth }}")
 
           if [ "${deactivate_status}" == "200" ]; then
             echo "API deactivated successfully."
@@ -28,7 +28,7 @@ jobs:
 
       - name: Update API
         run: |
-          update_status=$(curl -o /dev/null -s -w "%{http_code}" --location --request PUT "${{ vars.baseURL }}/apis/${{ vars.apiId }}?overwriteTags=null" -F type=openapi -F file=@"${{github.workspace}}/APIs/Petstore/petstore.yaml" -F apiName="swaggerhub-petstore"  -H "Authorization: Basic ${{ secrets.basicAuth }}")      
+          update_status=$(curl -o /dev/null -s -w "%{http_code}" --location --request PUT "${{ vars.baseURL }}/apis/cb7fcbf0-fc21-46ef-8d55-936480d4997f?overwriteTags=null" -F type=openapi -F file=@"${{github.workspace}}/APIs/Petstore/petstore.yaml" -F apiName="swaggerhub-petstore"  -H "Authorization: ${{ secrets.basicAuth }}")      
 
           if [ "${update_status}" == "200" ]; then
             echo "API updated successfully."
@@ -38,7 +38,7 @@ jobs:
 
       - name: Activate API
         run: |
-          activate_status=$(curl -o /dev/null -s -w "%{http_code}" --location --request PUT "${{ vars.baseURL }}/apis/${{ vars.apiId }}/activate" -H "Accept: application/json" -H "Authorization: Basic ${{ secrets.basicAuth }}")
+          activate_status=$(curl -o /dev/null -s -w "%{http_code}" --location --request PUT "${{ vars.baseURL }}/apis/cb7fcbf0-fc21-46ef-8d55-936480d4997f/activate" -H "Accept: application/json" -H "Authorization: ${{ secrets.basicAuth }}")
 
           if [ "${activate_status}" == "200" ]; then
             echo "API activated successfully."
