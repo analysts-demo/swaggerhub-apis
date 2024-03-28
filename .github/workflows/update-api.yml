@@ -5,40 +5,43 @@ on:
 
   push:
     paths:
-      - 'APIs/Petstore/petstore.yaml'
-      - '.github/workflows/*'
-
-env:
-  baseURL: 'https://analystsdemo.apigw-aw-eu.webmethods.io/rest/apigateway/'
-  apiId: 'cb7fcbf0-fc21-46ef-8d55-936480d4997f'
-  policyId: ''
+      - "APIs/Petstore/petstore.yaml"
+      - ".github/workflows/*"
 
 jobs:
   update-api:
-    runs-on: [ analysts-demo ]
+    runs-on: [analysts-demo]
     steps:
       - name: Deactivate API
         run: |
           deactivate_status=$(curl -o /dev/null -s -w "%{http_code}" --location --request PUT "${{ vars.baseURL }}/apis/${{ vars.apiId }}/deactivate" -H "Accept: application/json" -H "Authorization: Basic ${{ secrets.basicAuth }}")
-          
+
           if [ "${deactivate_status}" == "200" ]; then
             echo "API deactivated successfully."
+          elif [ "${deactivate_status}" == "400" ]; then
+            echo "API is in deactivate state."
           else
             echo "Unable to deactivate API."
-            exit 1
           fi
 
-      - name: Update API
+      - name: Read API
         run: |
-          echo "Update API"
+          update_status=$(curl -o /dev/null -s -w "%{http_code}" --location --request PUT "${{ vars.baseURL }}/apis/${{ vars.apiId }}?overwriteTags=null" -F type=openapi -F file=@APIs/Petstore/petstore.yaml -F apiName="swaggerhub-petstore"  -H "Authorization: Basic ${{ secrets.basicAuth }}")      
+
+          if [ "${update_status}" == "200" ]; then
+            echo "API updated successfully."
+          else
+            echo "Unable to update API."
+          fi
 
       - name: Activate API
         run: |
           activate_status=$(curl -o /dev/null -s -w "%{http_code}" --location --request PUT "${{ vars.baseURL }}/apis/${{ vars.apiId }}/activate" -H "Accept: application/json" -H "Authorization: Basic ${{ secrets.basicAuth }}")
-          
+
           if [ "${activate_status}" == "200" ]; then
             echo "API activated successfully."
+          elif [ "${deactivate_status}" == "400" ]; then
+            echo "API is in active state."
           else
             echo "Unable to activate API."
-            exit 1
           fi
