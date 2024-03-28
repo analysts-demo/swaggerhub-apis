@@ -25,7 +25,7 @@ jobs:
 
       - name: Update API
         run: |
-          update_status=$(curl -o /dev/null -s -w "%{http_code}" --location --request PUT "${{ vars.baseURL }}/apis/${{ vars.apiId }}?overwriteTags=null" -F type=openapi -F file=@APIs/Petstore/petstore.yaml -F apiName="swaggerhub-petstore"  -H "Authorization: Basic ${{ secrets.basicAuth }}")      
+          update_status=$(curl -o /dev/null -s -w "%{http_code}" --location --request PUT "${{ vars.baseURL }}/apis/${{ vars.apiId }}?overwriteTags=null" -F type=openapi -F file=@"APIs/Petstore/petstore.yaml" -F apiName="swaggerhub-petstore"  -H "Authorization: Basic ${{ secrets.basicAuth }}")      
 
           if [ "${update_status}" == "200" ]; then
             echo "API updated successfully."
