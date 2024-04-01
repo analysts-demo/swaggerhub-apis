@@ -5,7 +5,7 @@ on:
 
   push:
     paths:
-      - "APIs/Petstore/petstore.yaml"
+      - "APIs/Petstore/Petstore.yaml"
 
 jobs:
   update-api:
