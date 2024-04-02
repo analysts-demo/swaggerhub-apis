@@ -42,7 +42,7 @@ jobs:
 
           if [ "${activate_status}" == "200" ]; then
             echo "API activated successfully."
-          elif [ "${deactivate_status}" == "400" ]; then
+          elif [ "${activate_status}" == "400" ]; then
             echo "API is in active state."
           else
             echo "Unable to activate API."
