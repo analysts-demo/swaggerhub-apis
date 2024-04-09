@@ -1,4 +1,4 @@
-name: Update API
+name: Update, Publish and Promote API
 
 on:
   workflow_dispatch:
@@ -8,12 +8,12 @@ on:
       - "APIs/Petstore/petstore.yaml"
 
 jobs:
-  update-api:
+  update-publish-promote-api:
     runs-on: [analysts-demo]
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
-        
+
       - name: Deactivate API
         run: |
           deactivate_status=$(curl -o /dev/null -s -w "%{http_code}" --location --request PUT "${{ vars.baseURL }}/apis/cb7fcbf0-fc21-46ef-8d55-936480d4997f/deactivate" -H "Accept: application/json" -H "Authorization: ${{ secrets.basicAuth }}")
@@ -47,3 +47,61 @@ jobs:
           else
             echo "Unable to activate API."
           fi
+
+      - name: Run fuctional tests
+        run: |
+          cd ${{github.workspace}}/.github/tests
+          k6 run functionalTest.js
+
+      - name: Upload Dev functional test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: Dev-functional-test-results
+          path: "${{github.workspace}}/.github/tests/summary-functional.html"
+
+      - name: Publish to STAGE Portal
+        run: |
+          curl -X PUT -d '{"communities":["44d502a8-6e5c-4cd2-87ed-178633d511ef"],"endpoints":["http://analystsdemo.apigw-aw-eu.webmethods.io/gateway/swaggerhub-petstore/1.0.0","https://analystsdemo.apigw-aw-eu.webmethods.io/gateway/swaggerhub-petstore/1.0.0"]}' -H "Content-Type: application/json" -H "Authorization: Basic Z29rdWwucmFqOnFteS1rZHY1cXJ6IWJjZi5LWU4=" https://analystsdemo.apigw-aw-eu.webmethods.io/rest/apigateway/apis/cb7fcbf0-fc21-46ef-8d55-936480d4997f/publish?portalGatewayId=dfa6c852-83cb-42d4-b583-52dc5d3977b7
+
+      - name: Promote to QA
+        run: |
+          curl -X POST -d '{"description": "Promotion Set to promote to QA environment","name":"PromoteToTest","destinationStages": ["f43f0fba-2ecd-4846-855e-b0de75f57eb0"],"promotedAssets": {"api": ["cb7fcbf0-fc21-46ef-8d55-936480d4997f"]}}' -H "Content-Type: application/json" -H "Authorization: ${{ secrets.basicAuth }}" ${{ vars.baseURL }}/promotion?overwrite=true
+
+  qa_suite:
+    runs-on: [analysts-demo]
+    needs: update-publish-promote-api
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run fuctional tests
+        run: |
+          cd ${{github.workspace}}/.github/tests
+          k6 run functionalTest.js
+
+      - name: Run Performance tests
+        run: |
+          cd ${{github.workspace}}/.github/tests
+          k6 run performanceTest.js
+
+      - name: Upload QA test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: QA-test-results
+          path: |
+            "${{github.workspace}}/.github/tests/summary.html"
+            "${{github.workspace}}/.github/tests/summary-functional.html"
+
+      - name: Publish to PREPROD Portal
+        run: |
+          curl -X PUT -d '{"communities":["44d502a8-6e5c-4cd2-87ed-178633d511ef"],"endpoints":["http://demofreeforever.apigw-aw-eu.webmethods.io/gateway/swaggerhub-petstore/1.0.0","https://demofreeforever.apigw-aw-eu.webmethods.io/gateway/swaggerhub-petstore/1.0.0"]}' -H "Content-Type: application/json" -H "Authorization: Basic YW5hbHlzdHNfZGVtbzp4d2VARFdKMHdjaDZxcmcqd3hx" https://demofreeforever.apigw-aw-eu.webmethods.io/rest/apigateway/apis/cb7fcbf0-fc21-46ef-8d55-936480d4997f/publish?portalGatewayId=fafd005c-51a7-4754-afb9-1c5f493e301d
+
+      - name: Promote to Prod Gateway
+        run: |
+          curl -X POST -d '{"description": "Promotion Set to promote to Prod environment","name":"PromoteToProd","destinationStages": ["71cf4ef0-db64-4dc1-a921-c212d4f3fc09"],"promotedAssets": {"api": ["cb7fcbf0-fc21-46ef-8d55-936480d4997f"]}}' -H "Content-Type: application/json" -H "Authorization: Basic YW5hbHlzdHNfZGVtbzp4d2VARFdKMHdjaDZxcmcqd3hx" https://demofreeforever.apigw-aw-eu.webmethods.io/rest/apigateway/promotion?overwrite=true
+
+      - name: Publish to PROD Portal
+        run: |
+          curl -X PUT -d '{"communities":["44d502a8-6e5c-4cd2-87ed-178633d511ef"],"endpoints":["http://freeforever.apigw-aw-eu.webmethods.io/gateway/swaggerhub-petstore/1.0.0","http://freeforever.apigw-aw-eu.webmethods.io/gateway/swaggerhub-petstore/1.0.0"]}' -H "Content-Type: application/json" -H "Authorization: Basic YW5hbHlzdHNfZGVtbzpuZ3YxV0hBNnVrZUBkd2ZAZHZy" https://freeforever.apigw-aw-eu.webmethods.io/rest/apigateway/apis/cb7fcbf0-fc21-46ef-8d55-936480d4997f/publish?portalGatewayId=789d6194-718a-425a-9b79-58a14b31c6cf
